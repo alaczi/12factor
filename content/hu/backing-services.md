@@ -1,0 +1,14 @@
+## IV. Támogató szolgáltatások(./backing-services)
+### A támogató szolgáltatások kezelése mint csatolt erőforrások 
+
+A *támogató szolgáltasásnak* nevezzük bármely szolgáltatást amit az alkalmazás normál üzemelése során a hálózaton használ. Ezek pédául adatbázisok (mint [MySQL](http://dev.mysql.com/) vagy [CouchDB](http://couchdb.apache.org/)), messaging/queueing rendszerek (mint [RabbitMQ](http://www.rabbitmq.com/) vagy [Beanstalkd](http://kr.github.com/beanstalkd/)), SMTP a kimenő e-mail üzenetekhez (mint a [Postfix](http://www.postfix.org/)), és különböző cache megoldások (mint a [Memcached](http://memcached.org/)) 
+
+Hagyományosan a támogató szolgáltatásokat ugyanazon rendszeradminisztárorok üzemeltetik mint az alkalmazás éles telepítését. A saját menedzselésű szolgáltatásokon felül az alkalmazás használhat harmadik fél által nyújtott szolgáltatásokat. Például: SMTP szolgáltatás (mint [Postmark](http://postmarkapp.com/)), futásidejű adatgyűjtő rendszerek (mint a [New Relic](http://newrelic.com/) vagy [Loggly](http://www.loggly.com/)), bináris asset tárházak (mint [Amazon S3](http://aws.amazon.com/s3/)), és API alapú ügyfél szolgáltatások (mint [Twitter](http://dev.twitter.com/), [Google Maps](https://developers.google.com/maps/), vagy [Last.fm](http://www.last.fm/api)).
+
+** A tizenék-faktoros alkalmazás forráskódja nem tesz különbséget a saját és külső szolgáltatások között.*** Az alkalmazás számára mindkettő csatolt erőforrás amely URL-en vagy egyéb [konfigban](./config) tárold módon érhető el. A tizenkét-faktoros alkalmazás egy [telepítésének](./codebase) képesnek kell váltani egy helyi MySQL adatbázisról egy harmadik fél által menedzselt megoldásra  (mint az [Amazon RDS](http://aws.amazon.com/rds/) az alkalmazás forráskódjának változtatása nélkül. Ugyanígy, egy helyi SMTP szolgáltatás egyszerűen kicseréhető kell hogy legyen egy külső szolgáltatással mint például a Postmark. Mindkét esetben az egyedüli szükséges változtatás az elérések átírása a konfigurációban.
+
+Minden támogató szolgáltatás egy *erőforrás*. Páldául egy MySQL adatbázis egy erőforrás. Két MySQL adatbázis, (mégha alkalmazás szintű sharding? - ra használt) két erőforrásnak számít. A tizenkét-faktoros alkalmazás ezeket az adatbázisokat *csatolt erőforrásként* kezeli, ami mutatja a laza összerendelésüket a telepítéssel amelyhez csatolásra kerülnek.
+
+<img src="/images/attached-resources.png" class="full" alt="Éles rendszer négy támogató szolgáltatással." />
+
+Az erőforrások egy telepítéshez tetszőlegesen hozzárendelhetőek és elvehetőek. Példáhul ha az alkalmazás adatbázisa egy hardver hiba miatt hibásan működik, az alkalmazás üzemeltetője dönthet úgy, hogy egy új adatbázist felhúz egy aktuálsi mentés alapján. Az aktuális éles adatbázist ekkor lecsatolhatja és az új adatbázist hozzárendelheti a futó alkalmazáshoz. Mindezt a forráskód megváltoztatása nélkül. 

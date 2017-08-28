@@ -8,19 +8,19 @@ A tizenkét faktor
 ### Egyértelműen definiált és elkülönített függőségek
 
 ## [III. Konfiguráció](./config)
-### A konfiguráció tárolása a futtató környezetben 
+### A konfiguráció tárolása környezeti változókban 
 
-## [IV. Háttér szolgáltatások](./backing-services)
-### A háttérszolgáltatások kezelése mint csatolt erőforrások 
+## [IV. Támogató szolgáltatások](./backing-services)
+### A támogató szolgáltatások kezelése mint csatolt erőforrások 
 
-## [V. Fordítás, kibocsájtás, futtatás](./build-release-run)
+## [V. Fordítás, pulbikálás, futtatás](./build-release-run)
 ### Szigorúan elkülönített fordítási és futtatási szakasz
 
 ## [VI. Folyamatok](./processes)
 ### Alkalmazások futtatása mint egy vagy több állapot mentes folyamat 
 
 ## [VII. Port hozzárendelés](./port-binding)
-### Szolgáltatások kiajánlásaa port hozzárendeléssel 
+### Szolgáltatások kiajánlása port hozzárendeléssel 
 
 ## [VIII. Párhuzamosság](./concurrency)
 ### Skálázás a folyamat model segítségével
