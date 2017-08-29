@@ -26,7 +26,7 @@ A tizenkét faktor
 ### Skálázás a folyamat model segítségével
 
 ## [IX. Eldobhatóság](./disposability)
-### Megbíhatóság növelése gyors inditással és megfelelően kezelt tervezett leállítással 
+### Megbízhatóság növelése gyors inditással és megfelelően kezelt tervezett leállítással 
 
 ## [X. Fejlesztési és éles környezet hasonlóság](./dev-prod-parity)
 ### Fejlesztői, staging, és éles környezetek legyenek a lehető leghasonlóbbak 

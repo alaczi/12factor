@@ -1,0 +1,15 @@
+## IX. Eldobhatóság
+### Megbízhatóság növelése gyors inditással és megfelelően kezelt tervezett leállítással 
+
+**A tizenkét-faktoros alkalmazás [folyamatai](./processes) *eldobhatóak*, azaz egy pillanat alatt elindíthatóak és megállíthatóak.** Ez lehetővé teszi a rugalmas skálázhatóságot, a [kód](./codebase) vagy [konfig](./config) változásainak gyors telepítést és növeli az éles telepítések megbízhatóságát.
+
+A folyamatoknak törekedni kell az **indítási idő** minimalizálására. Ideális esetben egy folyamat indítása nem hosszabb mint néhány másodperc az indító parancs kiadásától addig a pillanatig amikor a folyamat kész a kérések fogadására vagy feladatok feldolgozására. A rövid indítási idő növeli a [kibocsájtási](./build-release-run) folyamat gyorsaságát és skálázhatóságát és jó hatással van a megbíhatóságra mert a process manager szükség esetén egyszerűen mozgathatja a feladatokat egy új fizikai gépre.
+
+A folyamatoknak **támogatni kell a tiszta leállást amikor megkapják a [SIGTERM](http://en.wikipedia.org/wiki/SIGTERM)** jelzést a folyamat kezelőtől. Webes folyamat esetén ez a használt port lezárását jelenti (és így elutasítva az összes új bejövő kérést), de a kilépéssel megvárva meglévő kérések kiszolgálásának befejezését. Ez feltételezi, hogy a HTTP kérések általában rövid (nem több mint néhány másodperc) lefutásúak, vagy, ha a hosszabb idejű lekérések történnek, a kapcsolat lezáródása esetén a kliensnek képesnek kell lennie az újrakapcsolódásra. 
+
+Egy feldolgozó folyamat esetében a tiszta leállás általában az aktuális feladat várósorba való visszaadását jelenti. Például [RabbitMQ](http://www.rabbitmq.com/) esetén a folyamat egy [`NACK`](http://www.rabbitmq.com/amqp-0-9-1-quickref.html#basic.nack) üzenetet küld;  [Beanstalkd](http://kr.github.com/beanstalkd/) esetén a feladat automatikusan visszakerül a városorba amikor a folyamat lekapcsolódik. Lock-alapú rendszerek esetén mint a [Delayed Job](https://github.com/collectiveidea/delayed_job#readme) biztosnak kell lennünk benne, hogy az adott feladaton a lock elengedésre kerül. Ehhez a modelhez szükséges, hogy az egyes feladatok feldolgozása [újraidítható](http://en.wikipedia.org/wiki/Reentrant_%28subroutine%29) legyen, amit általában az eredmény trazakcióba csomagolásával, vagy a művelet [idempotent](http://en.wikipedia.org/wiki/Idempotence)-é tételével érhetünk el.
+
+A folyamatokat **ellenállóvá kell tenni a hirtelen halállal szemben**, ami előfordulhat például egy hardver hiba esetén. Ez sokkal kevésbé valószínű mint a tervezett leállítás a `SIGTERM` szignállal, de előfordulhat. Egy ajánlot megközelítés olyan robusztus városor használata mint a Beanstalkd, ahol a kliens lekapcsolodása vagy időtúllépés esetén a feladatok automatikusan visszakerülnek a sorba. Minden esetre a tizenkét-faktoros alkalmazást úgy kell megtervezni, hogy kezelni tudja a váratlan, nem tervezett leállásokat. [Crash-only design](http://lwn.net/Articles/191059/) alkalmazza az elgondolást a [logikai konklúziójában](http://docs.couchdb.org/en/latest/intro/overview.html).
+
+
+
